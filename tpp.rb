@@ -141,6 +141,20 @@ class Page
   def title
     @title
   end
+  
+  attr_accessor :next_page
+  attr_accessor :prev_page
+
+  # Splits to a child page in case of pagination
+  def split_page
+    @next_page = Page.new(@title)
+    @next_page.prev_page = self
+    nl = next_line
+    while not @eop do
+      @next_page.add_line(nl)
+      nl = next_line
+    end
+  end
 end
 
 
@@ -508,6 +522,7 @@ class NcursesVisualizer < TppVisualizer
     @indent = 3
     @cur_line = @voffset
     @output = @shelloutput = false
+    @paginate = false
   end
 
   def get_key
@@ -526,6 +541,10 @@ class NcursesVisualizer < TppVisualizer
       else
         return ch
       end
+  end
+
+  def paginate?
+    @paginate
   end
 
   def clear
@@ -956,6 +975,9 @@ class NcursesVisualizer < TppVisualizer
     if @output or @shelloutput then
       width -= 2
     end
+    if @cur_line > @termheight - 4 then
+      @paginate = true
+    end
     lines = split_lines(line,width)
     lines.each do |l|
       @screen.move(@cur_line,@indent)
@@ -1378,15 +1400,21 @@ class InteractiveController < TppController
   end
 
   def do_run
+    @page = @pages[@cur_page]
     loop do
       wait = false
       @vis.draw_slidenum(@cur_page + 1, @pages.size, false)
       # read and visualize lines until the visualizer says "stop" or we reached end of page
       begin
-        line = @pages[@cur_page].next_line
-        eop = @pages[@cur_page].eop?
+        line = @page.next_line
+        paginate = @vis.paginate?
+        eop = @page.eop?
+        if paginate then
+          @page.split_page
+          eop = true
+        end
         wait = @vis.visualize(line,eop)
-      end while not wait and not eop
+      end while not wait and not eop and not paginate
       # draw slide number on the bottom left and redraw:
       @vis.draw_slidenum(@cur_page + 1, @pages.size, eop)
       @vis.do_refresh
@@ -1411,7 +1439,7 @@ class InteractiveController < TppController
             p = @vis.read_newpage(@pages,@cur_page)
             if p >= 0 and p < @pages.size
               @cur_page = p
-              @pages[@cur_page].reset_eop
+              @page.reset_eop
               @vis.new_page
             else
               @vis.restore_screen(screen)
@@ -1432,16 +1460,26 @@ class InteractiveController < TppController
             @vis.clear
             @vis.restore_screen(screen)
           when :keyright, :keydown, 32
-            if @cur_page + 1 < @pages.size and eop then
-              @cur_page += 1
-              @pages[@cur_page].reset_eop
-              @vis.new_page
+            if eop then
+              @page = @page.next_page
+              if not @page and @cur_page + 1 < @pages.size then
+                @cur_page += 1
+                @page = @pages[@cur_page]
+                @page.reset_eop
+              end
+              if @page then
+                @vis.new_page
+              end
             end
             break
           when ?b.ord, ?B.ord, :keyleft, :keyup
-            if @cur_page > 0 then
+            @page = @page.prev_page
+            if not @page and @cur_page > 0 then
               @cur_page -= 1
-              @pages[@cur_page].reset_eop
+              @page = @pages[@cur_page]
+              @page.reset_eop
+            end
+            if @page then
               @vis.new_page
             end
             break
