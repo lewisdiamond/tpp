@@ -217,7 +217,7 @@ class TppVisualizer
   end
 
   def new_page
-    $stderr.puts "Error: TppVisualizer#new_page has been called directly."
+    $stderr.puts "Error: TppVisualizer#NEW_page has been called directly."
     Kernel.exit(1)
   end
 
@@ -643,6 +643,7 @@ class NcursesVisualizer < TppVisualizer
 
   def new_page
     @cur_line = @voffset
+    @paginate = false
     @output = @shelloutput = false
     setsizes
     @screen.clear
@@ -975,7 +976,7 @@ class NcursesVisualizer < TppVisualizer
     if @output or @shelloutput then
       width -= 2
     end
-    if @cur_line > @termheight - 4 then
+    if @cur_line > @termheight - 6 then
       @paginate = true
     end
     lines = split_lines(line,width)
@@ -1462,26 +1463,30 @@ class InteractiveController < TppController
           when :keyright, :keydown, 32
             if eop then
               @page = @page.next_page
-              if not @page and @cur_page + 1 < @pages.size then
-                @cur_page += 1
+              if not @page 
+                if @cur_page + 1 < @pages.size then
+                  @cur_page += 1
+                else
+                  @cur_page = @pages.size - 1
+                end
                 @page = @pages[@cur_page]
                 @page.reset_eop
               end
-              if @page then
-                @vis.new_page
-              end
+              @vis.new_page
             end
             break
           when ?b.ord, ?B.ord, :keyleft, :keyup
             @page = @page.prev_page
-            if not @page and @cur_page > 0 then
-              @cur_page -= 1
-              @page = @pages[@cur_page]
-              @page.reset_eop
+            if not @page then
+                if @cur_page > 0 then
+                  @cur_page -= 1
+                else
+                  @cur_page = 0 
+                end
+                @page = @pages[@cur_page]
             end
-            if @page then
-              @vis.new_page
-            end
+            @vis.new_page
+            @page.reset_eop
             break
           when :keyresize
             @vis.setsizes
