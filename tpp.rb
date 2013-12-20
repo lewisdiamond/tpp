@@ -144,7 +144,7 @@ class Page
   
   attr_accessor :next_page
   attr_accessor :prev_page
-
+  attr_accessor :cur_line
   # Splits to a child page in case of pagination
   def split_page
     @next_page = Page.new(@title)
@@ -976,7 +976,7 @@ class NcursesVisualizer < TppVisualizer
     if @output or @shelloutput then
       width -= 2
     end
-    if @cur_line > @termheight - 6 then
+    if @cur_line >= @termheight - 6 then
       @paginate = true
     end
     lines = split_lines(line,width)
@@ -1428,7 +1428,8 @@ class InteractiveController < TppController
           when ?q.ord, ?Q.ord # 'Q'uit
             return
           when ?r.ord, ?R.ord # 'R'edraw slide
-            changed_page = true # @todo: actually implement redraw
+            @reload_file = true
+            return
           when ?e.ord, ?E.ord
             @cur_page = @pages.size - 1
             break
