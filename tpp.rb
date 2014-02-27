@@ -1743,7 +1743,7 @@ input = nil
 output = nil
 type = "ncurses"
 time = 1
-margin = 5
+margin = 2
 skip_next = false
 
 ARGV.each_index do |i|
