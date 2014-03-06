@@ -75,19 +75,19 @@ class FileParser
     f.each_line do |line|
       line.chomp!
       case line
-        when /^--##/ # ignore comments
-        when /^--newpage/
-          @pages << cur_page
-          number_pages += 1
-          name = line.sub(/^--newpage/,"")
-          if name == "" then
-            name = "slide " + (number_pages+1).to_s
-          else
-            name.strip!
-          end
-          cur_page = Page.new(name)
+      when /^--##/ # ignore comments
+      when /^--newpage/
+        @pages << cur_page
+        number_pages += 1
+        name = line.sub(/^--newpage/,"")
+        if name == "" then
+          name = "slide " + (number_pages+1).to_s
         else
-          cur_page.add_line(line)
+          name.strip!
+        end
+        cur_page = Page.new(name)
+      else
+        cur_page.add_line(line)
       end # case
     end # each
     @pages << cur_page
@@ -141,7 +141,7 @@ class Page
   def title
     @title
   end
-  
+
   attr_accessor :next_page
   attr_accessor :prev_page
   attr_accessor :cur_line
@@ -396,97 +396,97 @@ class TppVisualizer
   # It returns whether the controller shall wait for input.
   def visualize(line,eop)
     case line
-      when /^--heading /
-        text = line.sub(/^--heading /,"")
-        do_heading(text)
-      when /^--withborder/
-        do_withborder
-      when /^--horline/
-        do_horline
-      when /^--color /
-        text = line.sub(/^--color /,"")
-        text.strip!
-        do_color(text)
-      when /^--center /
-        text = line.sub(/^--center /,"")
-        do_center(text)
-      when /^--right /
-        text = line.sub(/^--right /,"")
-        do_right(text)
-      when /^--exec /
-        cmdline = line.sub(/^--exec /,"")
-        do_exec(cmdline)
-      when /^---/
-        do_wait
-        return true
-      when /^--beginoutput/
-        do_beginoutput
-      when /^--beginshelloutput/
-        do_beginshelloutput
-      when /^--endoutput/
-        do_endoutput
-      when /^--endshelloutput/
-        do_endshelloutput
-      when /^--sleep /
-        time2sleep = line.sub(/^--sleep /,"")
-        do_sleep(time2sleep)
-      when /^--boldon/
-        do_boldon
-      when /^--boldoff/
-        do_boldoff
-      when /^--revon/
-        do_revon
-      when /^--revoff/
-        do_revoff
-      when /^--ulon/
-        do_ulon
-      when /^--uloff/
-        do_uloff
-      when /^--beginslideleft/
-        do_beginslideleft
-      when /^--endslideleft/, /^--endslideright/, /^--endslidetop/, /^--endslidebottom/
-        do_endslide
-      when /^--beginslideright/
-        do_beginslideright
-      when /^--beginslidetop/
-        do_beginslidetop
-      when /^--beginslidebottom/
-        do_beginslidebottom
-      when /^--sethugefont /
-        params = line.sub(/^--sethugefont /,"")
-        do_sethugefont(params.strip)
-      when /^--huge /
-        figlet_text = line.sub(/^--huge /,"")
-        do_huge(figlet_text)
-      when /^--footer /
-        @footer_txt = line.sub(/^--footer /,"")
-        do_footer(@footer_txt)
-      when /^--header /
-        @header_txt = line.sub(/^--header /,"")
-        do_header(@header_txt)
-      when /^--title /
-        title = line.sub(/^--title /,"")
-        do_title(title)
-      when /^--author /
-        author = line.sub(/^--author /,"")
-        do_author(author)
-      when /^--date /
-        date = line.sub(/^--date /,"")
-        if date == "today" then
-          date = Time.now.strftime("%b %d %Y")
-        elsif date =~ /^today / then
-          date = Time.now.strftime(date.sub(/^today /,""))
-        end
-        do_date(date)
-      when /^--bgcolor /
-        color = line.sub(/^--bgcolor /,"").strip
-        do_bgcolor(color)
-      when /^--fgcolor /
-        color = line.sub(/^--fgcolor /,"").strip
-        do_fgcolor(color)
-      when /^--color /
-        color = line.sub(/^--color /,"").strip
-        do_color(color)
+    when /^--heading /
+      text = line.sub(/^--heading /,"")
+      do_heading(text)
+    when /^--withborder/
+      do_withborder
+    when /^--horline/
+      do_horline
+    when /^--color /
+      text = line.sub(/^--color /,"")
+      text.strip!
+      do_color(text)
+    when /^--center /
+      text = line.sub(/^--center /,"")
+      do_center(text)
+    when /^--right /
+      text = line.sub(/^--right /,"")
+      do_right(text)
+    when /^--exec /
+      cmdline = line.sub(/^--exec /,"")
+      do_exec(cmdline)
+    when /^---/
+      do_wait
+      return true
+    when /^--beginoutput/
+      do_beginoutput
+    when /^--beginshelloutput/
+      do_beginshelloutput
+    when /^--endoutput/
+      do_endoutput
+    when /^--endshelloutput/
+      do_endshelloutput
+    when /^--sleep /
+      time2sleep = line.sub(/^--sleep /,"")
+      do_sleep(time2sleep)
+    when /^--boldon/
+      do_boldon
+    when /^--boldoff/
+      do_boldoff
+    when /^--revon/
+      do_revon
+    when /^--revoff/
+      do_revoff
+    when /^--ulon/
+      do_ulon
+    when /^--uloff/
+      do_uloff
+    when /^--beginslideleft/
+      do_beginslideleft
+    when /^--endslideleft/, /^--endslideright/, /^--endslidetop/, /^--endslidebottom/
+      do_endslide
+    when /^--beginslideright/
+      do_beginslideright
+    when /^--beginslidetop/
+      do_beginslidetop
+    when /^--beginslidebottom/
+      do_beginslidebottom
+    when /^--sethugefont /
+      params = line.sub(/^--sethugefont /,"")
+      do_sethugefont(params.strip)
+    when /^--huge /
+      figlet_text = line.sub(/^--huge /,"")
+      do_huge(figlet_text)
+    when /^--footer /
+      @footer_txt = line.sub(/^--footer /,"")
+      do_footer(@footer_txt)
+    when /^--header /
+      @header_txt = line.sub(/^--header /,"")
+      do_header(@header_txt)
+    when /^--title /
+      title = line.sub(/^--title /,"")
+      do_title(title)
+    when /^--author /
+      author = line.sub(/^--author /,"")
+      do_author(author)
+    when /^--date /
+      date = line.sub(/^--date /,"")
+      if date == "today" then
+        date = Time.now.strftime("%b %d %Y")
+      elsif date =~ /^today / then
+        date = Time.now.strftime(date.sub(/^today /,""))
+      end
+      do_date(date)
+    when /^--bgcolor /
+      color = line.sub(/^--bgcolor /,"").strip
+      do_bgcolor(color)
+    when /^--fgcolor /
+      color = line.sub(/^--fgcolor /,"").strip
+      do_fgcolor(color)
+    when /^--color /
+      color = line.sub(/^--color /,"").strip
+      do_color(color)
     else
       print_line(line)
     end
@@ -528,19 +528,19 @@ class NcursesVisualizer < TppVisualizer
   def get_key
     ch = @screen.getch
     case ch
-      when Ncurses::KEY_RIGHT
-        return :keyright
-      when Ncurses::KEY_DOWN
-        return :keydown
-      when Ncurses::KEY_LEFT
-        return :keyleft
-      when Ncurses::KEY_UP
-        return :keyup
-      when Ncurses::KEY_RESIZE
-        return :keyresize
-      else
-        return ch
-      end
+    when Ncurses::KEY_RIGHT
+      return :keyright
+    when Ncurses::KEY_DOWN
+      return :keydown
+    when Ncurses::KEY_LEFT
+      return :keyleft
+    when Ncurses::KEY_UP
+      return :keyup
+    when Ncurses::KEY_RESIZE
+      return :keyresize
+    else
+      return ch
+    end
   end
 
   def paginate?
@@ -587,37 +587,37 @@ class NcursesVisualizer < TppVisualizer
       window.move(@termheight/4,1+prompt.length+cursor_pos) # move cursor to the end of code
       ch = window.getch
       case ch
-        when Ncurses::KEY_ENTER, ?\n, ?\r
-          Ncurses.curs_set(0)
-          Ncurses.noecho
-          rc = Kernel.system(string)
-          if not rc then
-            @screen.mvaddstr(@termheight/4+1,1,"Error: exec \"#{string}\" failed with error code #{$?}")
-            @screen.mvaddstr(@termheight-2,@termwidth/2-message.length/2,message)
-          end
-          if rc then
-            @screen.mvaddstr(@termheight-2,@termwidth/2-message.length/2,message)
-            ch = Ncurses.getch()
-            @screen.refresh
-          end
-          return
-		when Ncurses::KEY_LEFT
-          cursor_pos = [0, cursor_pos-1].max # jump one character to the left
-        when Ncurses::KEY_RIGHT
-          cursor_pos = [0, cursor_pos+1].max # jump one character to the right
-        when Ncurses::KEY_BACKSPACE
-          string = string[0...([0, cursor_pos-1].max)] + string[cursor_pos..-1]
-          cursor_pos = [0, cursor_pos-1].max
-          window.mvaddstr(@termheight/4, 1+prompt.length+string.length, " ")
-        when " "[0]..255
-          if (cursor_pos < max_len)
-            string[cursor_pos,0] = ch.chr
-            cursor_pos += 1
-          else
-            Ncurses.beep
-          end
-      else
+      when Ncurses::KEY_ENTER, ?\n, ?\r
+        Ncurses.curs_set(0)
+        Ncurses.noecho
+        rc = Kernel.system(string)
+        if not rc then
+          @screen.mvaddstr(@termheight/4+1,1,"Error: exec \"#{string}\" failed with error code #{$?}")
+          @screen.mvaddstr(@termheight-2,@termwidth/2-message.length/2,message)
+        end
+        if rc then
+          @screen.mvaddstr(@termheight-2,@termwidth/2-message.length/2,message)
+          ch = Ncurses.getch()
+          @screen.refresh
+        end
+        return
+      when Ncurses::KEY_LEFT
+        cursor_pos = [0, cursor_pos-1].max # jump one character to the left
+      when Ncurses::KEY_RIGHT
+        cursor_pos = [0, cursor_pos+1].max # jump one character to the right
+      when Ncurses::KEY_BACKSPACE
+        string = string[0...([0, cursor_pos-1].max)] + string[cursor_pos..-1]
+        cursor_pos = [0, cursor_pos-1].max
+        window.mvaddstr(@termheight/4, 1+prompt.length+string.length, " ")
+      when " "[0]..255
+        if (cursor_pos < max_len)
+          string[cursor_pos,0] = ch.chr
+          cursor_pos += 1
+        else
           Ncurses.beep
+        end
+      else
+        Ncurses.beep
       end
     end
     Ncurses.curs_set(0)
@@ -796,7 +796,7 @@ class NcursesVisualizer < TppVisualizer
     @screen.addstr(footer_txt)
   end
 
- def do_header(header_txt)
+  def do_header(header_txt)
     @screen.move(@termheight - @termheight+1, (@termwidth - header_txt.length)/2)
     @screen.addstr(header_txt)
   end
@@ -1047,16 +1047,16 @@ class NcursesVisualizer < TppVisualizer
     Ncurses.overwrite(s,@screen)
   end
 
-  def draw_slidenum(cur_page,max_pages,eop)
+  def draw_slidenum(cur_page,max_pages,eop,np)
     @screen.move(@termheight - 2, @indent)
     @screen.attroff(Ncurses::A_BOLD) # this is bad
-    @screen.addstr("[slide #{cur_page}/#{max_pages}]")
-	if @footer_txt.to_s.length > 0 then
-	  do_footer(@footer_txt)
-	end
-	if @header_txt.to_s.length > 0 then
-	  do_header(@header_txt)
-	end
+    @screen.addstr("[slide #{cur_page}/#{max_pages}] #{np}")
+    if @footer_txt.to_s.length > 0 then
+      do_footer(@footer_txt)
+    end
+    if @header_txt.to_s.length > 0 then
+      do_header(@header_txt)
+    end
 
     if eop then
       draw_eop_marker
@@ -1110,7 +1110,7 @@ class LatexVisualizer < TppVisualizer
 \usepackage{times}
 \usepackage[T1]{fontenc}
 
-'
+    '
   end
 
   def do_footer(footer_text)
@@ -1345,7 +1345,11 @@ class AutoplayController < TppController
   def do_run
     loop do
       wait = false
-      @vis.draw_slidenum(@cur_page + 1, @pages.size, false)
+      next_page_name = "END"
+      if @pages.size > @cur_page +1 then
+        next_page_name = @pages[@cur_page+1].title
+      end
+      @vis.draw_slidenum(@cur_page + 1, @pages.size, false, next_page_name)
       # read and visualize lines until the visualizer says "stop" or we reached end of page
       begin
         line = @pages[@cur_page].next_line
@@ -1353,7 +1357,7 @@ class AutoplayController < TppController
         wait = @vis.visualize(line,eop)
       end while not wait and not eop
       # draw slide number on the bottom left and redraw:
-      @vis.draw_slidenum(@cur_page + 1, @pages.size, eop)
+      @vis.draw_slidenum(@cur_page + 1, @pages.size, false, next_page_name)
       @vis.do_refresh
 
       if eop then
@@ -1404,7 +1408,11 @@ class InteractiveController < TppController
     @page = @pages[@cur_page]
     loop do
       wait = false
-      @vis.draw_slidenum(@cur_page + 1, @pages.size, false)
+      next_page_name = "END"
+      if @pages.size > @cur_page +1 then
+        next_page_name = @pages[@cur_page+1].title
+      end
+      @vis.draw_slidenum(@cur_page + 1, @pages.size, false, next_page_name)
       # read and visualize lines until the visualizer says "stop" or we reached end of page
       begin
         line = @page.next_line
@@ -1417,7 +1425,7 @@ class InteractiveController < TppController
         wait = @vis.visualize(line,eop)
       end while not wait and not eop and not paginate
       # draw slide number on the bottom left and redraw:
-      @vis.draw_slidenum(@cur_page + 1, @pages.size, eop)
+      @vis.draw_slidenum(@cur_page + 1, @pages.size, eop, next_page_name)
       @vis.do_refresh
 
       # read a character from the keyboard
@@ -1425,72 +1433,72 @@ class InteractiveController < TppController
       loop do
         ch = @vis.get_key
         case ch
-          when ?q.ord, ?Q.ord # 'Q'uit
-            return
-          when ?r.ord, ?R.ord # 'R'edraw slide
-            @reload_file = true
-            return
-          when ?e.ord, ?E.ord
-            @cur_page = @pages.size - 1
-            break
-          when ?s.ord, ?S.ord
-            @cur_page = 0
-            break
-          when ?j.ord, ?J.ord # 'J'ump to slide
-            screen = @vis.store_screen
-            p = @vis.read_newpage(@pages,@cur_page)
-            if p >= 0 and p < @pages.size
-              @cur_page = p
-              @page.reset_eop
-              @vis.new_page
-            else
-              @vis.restore_screen(screen)
-            end
-            break
-          when ?l.ord, ?L.ord # re'l'oad current file
-            @reload_file = true
-            return
-          when ?c.ord, ?C.ord # command prompt
-            screen = @vis.store_screen
-            @vis.do_command_prompt
-            @vis.clear
+        when ?q.ord, ?Q.ord # 'Q'uit
+          return
+        when ?r.ord, ?R.ord # 'R'edraw slide
+          @reload_file = true
+          return
+        when ?e.ord, ?E.ord
+          @cur_page = @pages.size - 1
+          break
+        when ?s.ord, ?S.ord
+          @cur_page = 0
+          break
+        when ?j.ord, ?J.ord # 'J'ump to slide
+          screen = @vis.store_screen
+          p = @vis.read_newpage(@pages,@cur_page)
+          if p >= 0 and p < @pages.size
+            @cur_page = p
+            @page.reset_eop
+            @vis.new_page
+          else
             @vis.restore_screen(screen)
-          when ??.ord, ?h.ord
-            screen = @vis.store_screen
-            @vis.show_help_page
-            ch = @vis.get_key
-            @vis.clear
-            @vis.restore_screen(screen)
-          when :keyright, :keydown, 32
-            if eop then
-              @page = @page.next_page
-              if not @page 
-                if @cur_page + 1 < @pages.size then
-                  @cur_page += 1
-                else
-                  @cur_page = @pages.size - 1
-                end
-                @page = @pages[@cur_page]
-                @page.reset_eop
+          end
+          break
+        when ?l.ord, ?L.ord # re'l'oad current file
+          @reload_file = true
+          return
+        when ?c.ord, ?C.ord # command prompt
+          screen = @vis.store_screen
+          @vis.do_command_prompt
+          @vis.clear
+          @vis.restore_screen(screen)
+        when ??.ord, ?h.ord
+          screen = @vis.store_screen
+          @vis.show_help_page
+          ch = @vis.get_key
+          @vis.clear
+          @vis.restore_screen(screen)
+        when :keyright, :keydown, 32
+          if eop then
+            @page = @page.next_page
+            if not @page
+              if @cur_page + 1 < @pages.size then
+                @cur_page += 1
+              else
+                @cur_page = @pages.size - 1
               end
-              @vis.new_page
-            end
-            break
-          when ?b.ord, ?B.ord, :keyleft, :keyup
-            @page = @page.prev_page
-            if not @page then
-                if @cur_page > 0 then
-                  @cur_page -= 1
-                else
-                  @cur_page = 0 
-                end
-                @page = @pages[@cur_page]
+              @page = @pages[@cur_page]
+              @page.reset_eop
             end
             @vis.new_page
-            @page.reset_eop
-            break
-          when :keyresize
-            @vis.setsizes
+          end
+          break
+        when ?b.ord, ?B.ord, :keyleft, :keyup
+          @page = @page.prev_page
+          if not @page then
+            if @cur_page > 0 then
+              @cur_page -= 1
+            else
+              @cur_page = 0
+            end
+            @page = @pages[@cur_page]
+          end
+          @vis.new_page
+          @page.reset_eop
+          break
+        when :keyresize
+          @vis.setsizes
         end
       end
     end # loop
@@ -1784,24 +1792,24 @@ end
 ctrl = nil
 
 case type
-  when "ncurses"
-    load_ncurses
-    ctrl = InteractiveController.new(input,margin,NcursesVisualizer)
-  when "autoplay"
-    load_ncurses
-    ctrl = AutoplayController.new(input,time,margin,NcursesVisualizer)
-  when "txt"
-    if output == nil then
-      usage
-    else
-      ctrl = ConversionController.new(input,output,TextVisualizer)
-    end
-  when "latex"
-    if output == nil then
-      usage
-    else
-      ctrl = ConversionController.new(input,output,LatexVisualizer)
-    end
+when "ncurses"
+  load_ncurses
+  ctrl = InteractiveController.new(input,margin,NcursesVisualizer)
+when "autoplay"
+  load_ncurses
+  ctrl = AutoplayController.new(input,time,margin,NcursesVisualizer)
+when "txt"
+  if output == nil then
+    usage
+  else
+    ctrl = ConversionController.new(input,output,TextVisualizer)
+  end
+when "latex"
+  if output == nil then
+    usage
+  else
+    ctrl = ConversionController.new(input,output,LatexVisualizer)
+  end
 else
   usage
 end # case
