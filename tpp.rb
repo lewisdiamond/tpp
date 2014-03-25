@@ -976,7 +976,7 @@ class NcursesVisualizer < TppVisualizer
     if @output or @shelloutput then
       width -= 2
     end
-    if @cur_line >= @termheight - 6 then
+    if @cur_line >= @termheight - 4 then
       @paginate = true
     end
     lines = split_lines(line,width)
@@ -1048,7 +1048,7 @@ class NcursesVisualizer < TppVisualizer
   end
 
   def draw_slidenum(cur_page,max_pages,eop,np)
-    @screen.move(@termheight - 2, @indent)
+    @screen.move(@termheight - 1, @indent)
     @screen.attroff(Ncurses::A_BOLD) # this is bad
     @screen.addstr("[slide #{cur_page}/#{max_pages}] #{np}")
     if @footer_txt.to_s.length > 0 then
@@ -1064,7 +1064,7 @@ class NcursesVisualizer < TppVisualizer
   end
 
   def draw_eop_marker
-    @screen.move(@termheight - 2, @indent - 1)
+    @screen.move(@termheight - 1, @indent - 1)
     @screen.attron(A_BOLD)
     @screen.addstr("*")
     @screen.attroff(A_BOLD)
@@ -1418,7 +1418,7 @@ class InteractiveController < TppController
         line = @page.next_line
         paginate = @vis.paginate?
         eop = @page.eop?
-        if paginate then
+        if paginate and not eop then
           @page.split_page
           eop = true
         end
